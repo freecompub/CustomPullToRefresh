@@ -12,16 +12,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     var dataArray: Array<String> = ["One", "Two", "Three", "Four", "Five"]
     
-    var refreshControl: UIRefreshControl!
+    //var refreshControl: UIRefreshControl!
     
     @IBOutlet weak var tblDemo: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        tblDemo.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "idCell")
-        refreshControl = UIRefreshControl()
-        refreshControl.backgroundColor = UIColor.redColor()
-        refreshControl.tintColor = UIColor.yellowColor()
-        tblDemo.addSubview(refreshControl)
+        tblDemo.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "idCell")
+       // refreshControl = UIRefreshControl()
+        //refreshControl.backgroundColor = UIColor.red
+        //refreshControl.tintColor = UIColor.yellow
+        //tblDemo.addSubview(refreshControl)
+        
+        tblDemo.addPullToRefresh(PullToMakeSoup(at: .top))  {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                self.tblDemo.endRefreshing(at: .top)
+            }
+        }
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -30,23 +36,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Dispose of any resources that can be recreated.
     }
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataArray.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("idCell", forIndexPath: indexPath) 
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "idCell", for: indexPath) 
         
-        cell.textLabel!.text = dataArray[indexPath.row]
+        cell.textLabel!.text = dataArray[(indexPath as NSIndexPath).row]
         
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
     }
 }
